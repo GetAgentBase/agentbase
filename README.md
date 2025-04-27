@@ -7,13 +7,13 @@
   <a href="https://github.com/agentbase/agentbase/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
 </p>
 
-## 🚀 Overview
+## Overview
 
 AgentBase is an open-source platform that simplifies the development, deployment, and management of AI agents. 
 
 Like [Supabase](https://github.com/supabase/supabase) did for backend services, AgentBase unifies the essential infrastructure components needed to build capable, connected, and stateful AI agents into a cohesive, developer-friendly platform.
 
-## ✨ Features
+## How it works
 
 AgentBase will provide everything you need to build and manage AI agents:
 
@@ -24,7 +24,7 @@ AgentBase will provide everything you need to build and manage AI agents:
 - **Orchestration** - Create multi-agent workflows
 - **Observability** - Monitor agent activity with detailed logs
 
-## 🏗️ Project Status
+## Project Status
 
 - [x] Initial Planning
 - [ ] Alpha
@@ -33,7 +33,7 @@ AgentBase will provide everything you need to build and manage AI agents:
 
 We're in the early stages of development. Star this repository to get updates!
 
-## 🔍 Coming Soon
+## Coming Soon
 
 - Docker-based local development setup
 - Web dashboard for agent management
@@ -41,15 +41,15 @@ We're in the early stages of development. Star this repository to get updates!
 - Example agents and integrations
 - Documentation
 
-## 🤝 Contributing
+## Contributing
 
 We'll be opening for contributions soon! In the meantime, feel free to:
 
-- ⭐ Star the repository to show your interest
-- 🐛 Open issues for feature requests or bug reports
-- 💬 Start discussions about ideas or use cases
+- Star the repository to show your interest
+- Open issues for feature requests or bug reports
+- Start discussions about ideas or use cases
 
-## 📄 License
+## License
 
 AgentBase is licensed under the [MIT License](./LICENSE).
 
