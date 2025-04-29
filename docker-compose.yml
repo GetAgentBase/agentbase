@@ -1,0 +1,102 @@
+services:
+  # PostgreSQL Database
+  database:
+    image: postgres:15-alpine
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-agentbase}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme_in_dot_env}
+      - POSTGRES_DB=${POSTGRES_DB:-agentbase}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-agentbase} -d ${POSTGRES_DB:-agentbase}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    networks:
+      - agentbase_net
+    restart: unless-stopped
+
+  # Redis for caching and task queues
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "6379:6379"
+    networks:
+      - agentbase_net
+    restart: unless-stopped
+
+  # Backend API (FastAPI)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      # For development, mount code for hot-reloading - remove in production
+      - ./backend:/app
+      # But avoid mounting virtual environment or .git directories
+      - /app/venv
+      - /app/.git
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    environment:
+      - POSTGRES_HOST=database
+      - REDIS_HOST=redis
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-agentbase}:${POSTGRES_PASSWORD:-changeme_in_dot_env}@database:5432/${POSTGRES_DB:-agentbase}
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - agentbase_net
+    restart: unless-stopped
+
+  # Frontend (Next.js)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      # For development, mount code for hot-reloading - remove in production
+      - ./frontend:/app
+      # Avoid mounting node_modules or .git
+      - /app/node_modules
+      - /app/.git
+      - /app/.next
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - agentbase_net
+    restart: unless-stopped
+
+# Persistent volumes
+volumes:
+  db_data:
+    driver: local
+  redis_data:
+    driver: local
+
+# Network for service isolation
+networks:
+  agentbase_net:
+    driver: bridge 
