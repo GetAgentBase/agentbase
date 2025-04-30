@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import logging
 # Import your models if needed for early checks, though not strictly required for just starting
@@ -22,6 +23,15 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# Add CORS middleware to allow cross-origin requests from the frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 @app.get("/", tags=["Health"])
 async def read_root():
     """Basic endpoint to check if the API is responding."""
@@ -33,8 +43,6 @@ async def health_check():
     # In future, check DB and Redis connections here
     return {"status": "ok"}
 
-# --- Routers Will Be Added Below in Phase 1 ---
-# from .api import auth_router, agent_router # etc.
-# app.include_router(auth_router, prefix="/v1/auth", tags=["Authentication"])
-# app.include_router(agent_router, prefix="/v1/agents", tags=["Agents"])
-# ... 
+# --- API Routers ---
+from .api.v1 import api_router
+app.include_router(api_router, prefix="/api/v1")

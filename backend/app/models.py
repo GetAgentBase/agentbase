@@ -14,14 +14,26 @@ class User(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
-    is_admin = Column(Boolean, default=False)
-    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
-    updated_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), onupdate=func.now())
+    is_active = Column(Boolean, default=True)
+    is_superuser = Column(Boolean, default=False)  # Analogous to Django's superuser/staff status
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
+    api_keys = relationship("APIKey", back_populates="user", cascade="all, delete-orphan")
     llm_configs = relationship("LLMConfig", back_populates="user", cascade="all, delete-orphan")
     agents = relationship("Agent", back_populates="user", cascade="all, delete-orphan")
     configured_tools = relationship("ConfiguredTool", back_populates="user", cascade="all, delete-orphan")
     log_entries = relationship("LogEntry", back_populates="user", cascade="all, delete-orphan")
+
+class APIKey(Base):
+    __tablename__ = 'api_keys'
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False)
+    provider_name = Column(String, nullable=False, index=True)  # e.g., 'OpenAI', 'Anthropic'
+    encrypted_key = Column(String, nullable=False)  # Store the encrypted key here
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    user = relationship("User", back_populates="api_keys")
 
 class LLMConfig(Base):
     __tablename__ = 'llm_configs'
