@@ -45,4 +45,52 @@ export interface ApiError {
   status: number;
   message: string;
   details?: any;
+}
+
+// API Key types
+export interface APIKey {
+  id: string;
+  provider_name: string;
+  masked_key: string;
+  created_at?: string;
+}
+
+// LLM Config types
+export interface LLMConfig {
+  id: string;
+  provider: string;
+  model_name: string;
+  is_default: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+// Agent types
+export interface Agent {
+  id: string;
+  name: string;
+  description?: string;
+  system_prompt?: string;
+  llm_config_id?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AgentListResponse {
+  agents: Agent[];
+  count: number;
+}
+
+export interface AgentCreateRequest {
+  name: string;
+  description?: string;
+  system_prompt?: string;
+  llm_config_id?: string;
+}
+
+export interface AgentUpdateRequest {
+  name?: string;
+  description?: string;
+  system_prompt?: string;
+  llm_config_id?: string;
 } 

@@ -19,11 +19,8 @@ COPY . .
 # ARG NEXT_PUBLIC_BACKEND_URL
 # ENV NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
 
-# Build the application for production
-RUN npm run build
-
 # Expose the port the app runs on (default for Next.js is 3000)
 EXPOSE 3000
 
-# Command to run the production server
-CMD ["npm", "start"] 
+# Command to run the development server with hot reloading
+CMD ["npm", "run", "dev"] 

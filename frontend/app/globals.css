@@ -1,8 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Modern, Docker-inspired dark theme */
+  --background: #0f1621;
+  --foreground: #f3f4f6;
+  --primary: #47A8F5;
+  --primary-hover: #3994e0;
+  --secondary: #38bdf8;
+  --secondary-dark: #0284c7;
+  --panel: #141e2c;
+  --panel-header: #1a2535;
+  --panel-border: #243347;
+  --sidebar: #0a101b;
+  --sidebar-border: #1a2535;
+  --sidebar-active: #1a2535;
+  --input-bg: #121b29;
+  --input-border: #243347;
+  --card-bg: #141e2c;
+  --card-border: #1e293b;
+  --card-hover: #1a2535;
+  --button-text: #ffffff;
+  --text-primary: #f3f4f6;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --error: #ef4444;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --info: #47A8F5;
 }
 
 @theme inline {
@@ -14,13 +38,151 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0f1621;
+    --foreground: #f3f4f6;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.gradient-primary {
+  background-image: linear-gradient(45deg, var(--primary), var(--secondary));
+}
+
+.primary-button {
+  background-color: var(--primary);
+  color: white;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.primary-button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(71, 168, 245, 0.25);
+}
+
+.panel {
+  background-color: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  background-color: var(--card-hover);
+  border-color: var(--card-border);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+input, select, textarea {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(71, 168, 245, 0.2);
+  outline: none;
+}
+
+.sidebar-item {
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+}
+
+.sidebar-item:hover, .sidebar-item.active {
+  color: var(--text-primary);
+  background-color: var(--sidebar-active);
+}
+
+.status-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.status-online {
+  background-color: var(--success);
+}
+
+.status-offline {
+  background-color: var(--error);
+}
+
+.status-warning {
+  background-color: var(--warning);
+}
+
+/* Table styles */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.data-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.data-table tr:hover td {
+  background-color: var(--card-hover);
+}
+
+/* Docker-like badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  border-radius: 4px;
+}
+
+.badge-blue {
+  background-color: rgba(71, 168, 245, 0.15);
+  color: var(--primary);
+}
+
+.badge-green {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: var(--success);
+}
+
+.badge-red {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: var(--error);
 }

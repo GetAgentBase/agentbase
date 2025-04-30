@@ -73,16 +73,16 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     volumes:
-      # For development, mount code for hot-reloading - remove in production
+      # For development, mount code for hot-reloading
       - ./frontend:/app
       # Avoid mounting node_modules or .git
       - /app/node_modules
       - /app/.git
-      - /app/.next
     ports:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+      - WATCHPACK_POLLING=true
     depends_on:
       - backend
     networks:

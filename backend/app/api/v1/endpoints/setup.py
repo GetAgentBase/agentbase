@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from ....db.session import get_db
-from ....models import User, APIKey
+from ....models import User, APIKey, LLMConfig
 from ....schemas.setup_schemas import SetupRequest, SetupResponse
 from ....services.setup_service import is_setup_complete
 from ....security import hash_password, encrypt_data
@@ -65,6 +65,61 @@ async def perform_setup(setup_data: SetupRequest, db: Session = Depends(get_db))
     db.add(new_api_key)
     db.commit()
     db.refresh(new_api_key)
+    
+    # Create default LLM configurations based on the provider
+    if setup_data.api_key_provider.lower() == "openai":
+        # Add GPT-4o configuration (default)
+        gpt4o_config = LLMConfig(
+            user_id=new_user.id,
+            provider="openai",
+            model_name="gpt-4o",
+            encrypted_credentials=encrypted_api_key,
+            is_default=True
+        )
+        db.add(gpt4o_config)
+        
+        # Add GPT-3.5 Turbo configuration
+        gpt35_config = LLMConfig(
+            user_id=new_user.id,
+            provider="openai",
+            model_name="gpt-3.5-turbo",
+            encrypted_credentials=encrypted_api_key,
+            is_default=False
+        )
+        db.add(gpt35_config)
+        
+    elif setup_data.api_key_provider.lower() == "anthropic":
+        # Add Claude 3 Opus configuration (default)
+        claude_opus_config = LLMConfig(
+            user_id=new_user.id,
+            provider="anthropic",
+            model_name="claude-3-opus-20240229",
+            encrypted_credentials=encrypted_api_key,
+            is_default=True
+        )
+        db.add(claude_opus_config)
+        
+        # Add Claude 3 Sonnet configuration
+        claude_sonnet_config = LLMConfig(
+            user_id=new_user.id,
+            provider="anthropic",
+            model_name="claude-3-sonnet-20240229",
+            encrypted_credentials=encrypted_api_key,
+            is_default=False
+        )
+        db.add(claude_sonnet_config)
+        
+        # Add Claude 3 Haiku configuration
+        claude_haiku_config = LLMConfig(
+            user_id=new_user.id,
+            provider="anthropic",
+            model_name="claude-3-haiku-20240307",
+            encrypted_credentials=encrypted_api_key,
+            is_default=False
+        )
+        db.add(claude_haiku_config)
+    
+    db.commit()
     
     # Return success response
     return SetupResponse(

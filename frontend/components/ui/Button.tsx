@@ -1,8 +1,8 @@
 import React, { ButtonHTMLAttributes, ReactNode } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   icon?: ReactNode;
   children: ReactNode;
@@ -18,19 +18,21 @@ const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 disabled:pointer-events-none disabled:opacity-50';
+  const baseStyles = 'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/40 disabled:pointer-events-none disabled:opacity-50';
   
   const variantStyles = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
-    secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700',
-    outline: 'border border-gray-300 bg-transparent hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800',
-    ghost: 'bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800',
+    primary: 'bg-primary text-white hover:bg-primary-hover',
+    secondary: 'bg-panel-header/70 text-text-primary hover:bg-panel-header',
+    outline: 'border border-panel-border bg-transparent hover:bg-card-hover text-text-primary',
+    ghost: 'bg-transparent hover:bg-card-hover text-text-secondary hover:text-text-primary',
+    danger: 'bg-error text-white hover:bg-error/90',
   };
   
   const sizeStyles = {
+    xs: 'h-7 px-2 text-xs',
     sm: 'h-8 px-3 text-xs',
-    md: 'h-10 px-4 py-2',
-    lg: 'h-12 px-6 py-3 text-base',
+    md: 'h-9 px-3 py-2 text-sm',
+    lg: 'h-10 px-4 py-2 text-sm',
   };
   
   const buttonClasses = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`;
