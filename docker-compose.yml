@@ -58,6 +58,7 @@ services:
       - REDIS_HOST=redis
       - DATABASE_URL=postgresql://${POSTGRES_USER:-agentbase}:${POSTGRES_PASSWORD:-changeme_in_dot_env}@database:5432/${POSTGRES_DB:-agentbase}
       - REDIS_URL=redis://redis:6379/0
+      - AGENTBASE_FERNET_KEY=${AGENTBASE_FERNET_KEY}
     depends_on:
       database:
         condition: service_healthy

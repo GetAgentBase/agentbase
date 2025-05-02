@@ -14,6 +14,7 @@ function isProtectedPath(path: string): boolean {
     '/dashboard',
     '/agents',
     '/tools',
+    '/connectors',
     '/settings',
     '/api-keys',
   ];

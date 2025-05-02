@@ -5,6 +5,9 @@ import logging
 # Import your models if needed for early checks, though not strictly required for just starting
 # from .models import Base
 
+from .db.session import get_db
+from .services.connector_catalog import initialize_connector_registry
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -12,7 +15,12 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("AgentBase API starting up...")
-    # Add DB initialization, Redis connection check etc. here later
+    # Initialize connector registry
+    db = next(get_db())
+    try:
+        initialize_connector_registry(db)
+    except Exception as e:
+        logger.error(f"Error initializing connector registry: {e}")
     yield
     logger.info("AgentBase API shutting down...")
 

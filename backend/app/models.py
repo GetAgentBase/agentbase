@@ -24,6 +24,7 @@ class User(Base):
     agents = relationship("Agent", back_populates="user", cascade="all, delete-orphan")
     configured_tools = relationship("ConfiguredTool", back_populates="user", cascade="all, delete-orphan")
     log_entries = relationship("LogEntry", back_populates="user", cascade="all, delete-orphan")
+    user_connectors = relationship("UserConnector", back_populates="user", cascade="all, delete-orphan")
 
 class APIKey(Base):
     __tablename__ = 'api_keys'
@@ -65,6 +66,7 @@ class Agent(Base):
     agent_tool_links = relationship("AgentToolLink", back_populates="agent", cascade="all, delete-orphan")
     conversation_turns = relationship("ConversationTurn", back_populates="agent", cascade="all, delete-orphan")
     log_entries = relationship("LogEntry", back_populates="agent", cascade="all, delete-orphan")
+    agent_connector_links = relationship("AgentConnectorLink", back_populates="agent", cascade="all, delete-orphan")
 
     __table_args__ = (UniqueConstraint('user_id', 'name', name='uq_user_agent_name'),)
 
@@ -80,6 +82,36 @@ class Tool(Base):
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
 
     configured_tools = relationship("ConfiguredTool", back_populates="tool")
+    user_connectors = relationship("UserConnector", back_populates="tool")
+
+class UserConnector(Base):
+    """User-specific connector instances"""
+    __tablename__ = 'user_connectors'
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False)
+    tool_id = Column(UUID(as_uuid=True), ForeignKey('tools.id'), nullable=False)
+    name = Column(String, nullable=False)  # User-defined name (e.g., "My Work Gmail")
+    setup_status = Column(String, nullable=False, default='needs_setup')  # needs_setup, active, error
+    config_data = Column(JSON, nullable=True)  # User-specific configuration
+    encrypted_credentials = Column(String, nullable=True)  # Encrypted OAuth tokens or API keys
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+    updated_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    user = relationship("User", back_populates="user_connectors")
+    tool = relationship("Tool", back_populates="user_connectors")
+    agent_connector_links = relationship("AgentConnectorLink", back_populates="user_connector", cascade="all, delete-orphan")
+
+    __table_args__ = (UniqueConstraint('user_id', 'name', name='uq_user_connector_name'),)
+
+class AgentConnectorLink(Base):
+    """Links an Agent to a specific UserConnector instance"""
+    __tablename__ = 'agent_connector_links'
+    agent_id = Column(UUID(as_uuid=True), ForeignKey('agents.id'), primary_key=True)
+    user_connector_id = Column(UUID(as_uuid=True), ForeignKey('user_connectors.id'), primary_key=True)
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+
+    agent = relationship("Agent", back_populates="agent_connector_links")
+    user_connector = relationship("UserConnector", back_populates="agent_connector_links")
 
 class ConfiguredTool(Base):
     """An instance of a Tool configured by a user"""

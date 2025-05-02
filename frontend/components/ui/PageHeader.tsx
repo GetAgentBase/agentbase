@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import Button from './Button';
 
 interface PageHeaderProps {
-  title: string;
+  title: string | React.ReactNode;
   description?: string;
   actions?: React.ReactNode;
   showBackButton?: boolean;

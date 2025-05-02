@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
 import apiClient from '@/lib/apiClient';
 import { Agent } from '@/types/api';
+import ChatInterface from '@/components/chat/ChatInterface';
 
 export default function AgentDetailsPage() {
   const { user, isLoading: isLoadingAuth } = useAuth();
@@ -90,13 +91,30 @@ export default function AgentDetailsPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="bg-white shadow dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Agent Details</h1>
+          <div>
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white">Agents</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Create and manage your AI agents</p>
+          </div>
           <div className="flex items-center gap-4">
             <button 
-              className="inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 shadow-sm h-8 px-3 text-xs"
+              className="inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 shadow-sm h-8 px-3 text-xs"
               onClick={() => router.push('/agents')}
             >
-              Back to Agents
+              ← Back to Agents
+            </button>
+            <button 
+              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2 px-4 py-2 text-white rounded-md text-sm font-medium"
+              onClick={() => router.push('/agents/create')}
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 20 20" 
+                fill="currentColor" 
+                className="w-4 h-4"
+              >
+                <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+              </svg>
+              Create Agent
             </button>
           </div>
         </div>
@@ -153,14 +171,7 @@ export default function AgentDetailsPage() {
             
             <div className="mt-8">
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Chat with Agent</h3>
-              <div className="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-md flex items-center justify-center">
-                <button
-                  onClick={() => alert('Chat functionality coming soon!')}
-                  className="inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 shadow-sm h-10 px-4 py-2"
-                >
-                  Start Conversation
-                </button>
-              </div>
+              <ChatInterface agentId={agent.id} agentName={agent.name} />
             </div>
           </div>
         </div>
